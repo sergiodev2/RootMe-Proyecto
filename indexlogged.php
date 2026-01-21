@@ -1,8 +1,18 @@
 <?php
-session_start();
+/*session_start();
 $is_logged = isset($_SESSION['user_id']);
 $username = $is_logged ? $_SESSION['username'] : 'Guest';
+echo "<br>";
+*/
 ?>
+<?php
+session_start();
+require_once 'auth.php';
+$username = $_SESSION['username'];
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -16,43 +26,32 @@ $username = $is_logged ? $_SESSION['username'] : 'Guest';
     <nav>
         <div class="logo">>_ root<span>me</span></div>
         <div class="nav-links">
-            <a href="#">Retos</a>
-            <a href="#">Ranking</a>
+            <a href="ranking.php">Ranking</a>
+                <span style="color: #EBFF00; margin-left:20px;">[ <?php echo htmlspecialchars($username); ?> ]</span>
             
             <?php if ($is_logged): ?>
                 <span style="color: #d32f2f; margin-left:20px;">[ <?php echo htmlspecialchars($username); ?> ]</span>
-                <a href="logout.php" class="btn-login" style="border-color:#d32f2f; color:#d32f2f;">LOGOUT</a>
+                <a href="logout.php" class="btn-login2" style="border-color:#FF0000 !important; color:#FF0000 !important;">LOGOUT</a>
             <?php else: ?>
-                <a href="login.php" class="btn-login">LOGIN</a>
+                <a href="logout.php" class="btn-login2">LOGOUT</a>
             <?php endif; ?>
         </div>
     </nav>
 
     <section class="hero">
-        <p style="color: white; letter-spacing: 3px;">INITIALIZING SYSTEM...</p>
-        <h1>BECOME <span style="color:white">ROOT</span><span class="cursor"></span></h1>
+      <h1>Bienvenido de nuevo <span style="color:white">
+    <?php echo htmlspecialchars($_SESSION['username']); ?>
+</span><span class="cursor"></span></h1>
+
         <p>Entrena tus habilidades de hacking en entornos seguros.</p>
         
 	<div class="cta-container">
-    <a href="login.php" class="cta-btn">Start Hacking</a>
+    <a href="start.php" class="cta-btn" style="margin-right:20px;">Retos</a>
+    <a href="academia.php" class="cta-btn">Academia</a>
 </div>
 
     </section>
 
-    <section class="stats-bar">
-        <div class="stat-item">
-            <h3>150+</h3>
-            <p>VIRTUAL MACHINES</p>
-        </div>
-        <div class="stat-item">
-            <h3>12k</h3>
-            <p>ACTIVE USERS</p>
-        </div>
-        <div class="stat-item">
-            <h3>450</h3>
-            <p>CTF CHALLENGES</p>
-        </div>
-    </section>
 
     <footer>
         root@server:~$ sudo shutdown -h now

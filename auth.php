@@ -1,9 +1,16 @@
 <?php
 session_start();
-if (!isset($_SESSION['user_id'])) {
+
+// Verificamos si la variable de sesión 'username' o 'user_id' existe
+if (!isset($_SESSION['username'])) {
+    // Si no está loggeado, lo mandamos al login
     header("Location: login.php");
     exit();
-}
-$user_id = $_SESSION['user_id'];
+}else{
+	echo "DEBUG 1: NO TIENES LA SESIÓN INICIADA";
+
+};
+
+// Opcional: Definir variables globales para usar en el resto de la página
 $username = $_SESSION['username'];
-$rol = $_SESSION['rol'] ?? 0;
+?>
