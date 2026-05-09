@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 21-01-2026 a las 08:44:40
+-- Tiempo de generación: 09-05-2026 a las 00:51:50
 -- Versión del servidor: 10.6.22-MariaDB-0ubuntu0.22.04.1
--- Versión de PHP: 8.1.2-1ubuntu2.22
+-- Versión de PHP: 8.1.2-1ubuntu2.23
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,6 +20,20 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `auth_system`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `academia_email_logs`
+--
+
+CREATE TABLE `academia_email_logs` (
+  `id` int(11) NOT NULL,
+  `post_id` int(11) NOT NULL,
+  `usuario_id` int(11) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `enviado_en` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -76,6 +90,186 @@ INSERT INTO `categorias` (`id`, `nombre`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `cooldown_conexiones`
+--
+
+CREATE TABLE `cooldown_conexiones` (
+  `id` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
+  `ultima_apertura` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `cooldown_conexiones`
+--
+
+INSERT INTO `cooldown_conexiones` (`id`, `id_usuario`, `ultima_apertura`) VALUES
+(1, 21, '2026-04-20 19:09:20'),
+(2, 22, '2026-04-20 19:09:55'),
+(3, 20, '2026-05-06 23:45:03'),
+(4, 19, '2026-05-06 22:51:11'),
+(5, 14, '2026-04-22 09:21:03'),
+(6, 25, '2026-04-22 10:59:06'),
+(7, 26, '2026-04-22 23:28:51'),
+(8, 27, '2026-04-29 10:54:49'),
+(9, 28, '2026-04-22 10:53:25'),
+(10, 30, '2026-05-07 21:04:21'),
+(11, 29, '2026-05-08 13:22:58'),
+(12, 15, '2026-05-08 22:14:29');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `foro_retos`
+--
+
+CREATE TABLE `foro_retos` (
+  `id` int(11) NOT NULL,
+  `reto_id` int(11) NOT NULL,
+  `usuario_id` int(11) NOT NULL,
+  `username` varchar(100) NOT NULL,
+  `comentario` text NOT NULL,
+  `creado_en` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `foro_retos`
+--
+
+INSERT INTO `foro_retos` (`id`, `reto_id`, `usuario_id`, `username`, `comentario`, `creado_en`) VALUES
+(1, 1, 30, 'tiago.adm', 'test', '2026-05-06 07:36:24'),
+(2, 1, 30, 'tiago.adm', 'asas', '2026-05-06 08:00:59'),
+(3, 1, 20, 'carmen', 'Maquina muy amena para el usuario', '2026-05-06 08:01:07'),
+(5, 10, 30, 'tiago.adm', 'Este foro es un foro', '2026-05-06 08:15:49'),
+(6, 10, 29, 'tiago', 'Ya ves', '2026-05-06 08:16:03'),
+(7, 16, 15, 'sergio', 'Me encanto esta maquina, gracias por subir contenido a esta maravillosa web.', '2026-05-08 20:14:08');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `login_activity`
+--
+
+CREATE TABLE `login_activity` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `usuario_id` int(11) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `user_agent` varchar(255) DEFAULT NULL,
+  `login_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `login_activity`
+--
+
+INSERT INTO `login_activity` (`id`, `usuario_id`, `username`, `ip_address`, `user_agent`, `login_at`) VALUES
+(8, 15, 'sergio', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-15 08:41:25'),
+(11, 16, 'willy', '172.20.10.8', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36', '2026-04-15 08:53:27'),
+(13, 16, 'willy', '172.20.10.8', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36', '2026-04-15 08:54:32'),
+(14, 16, 'willy', '172.20.10.8', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36', '2026-04-15 08:55:09'),
+(16, 15, 'sergio', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-15 14:43:47'),
+(17, 16, 'willy', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-15 15:19:41'),
+(18, 15, 'sergio', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-15 16:09:44'),
+(19, 16, 'willy', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-15 18:10:47'),
+(20, 15, 'sergio', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-15 19:05:20'),
+(21, 15, 'sergio', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-15 19:07:16'),
+(22, 16, 'willy', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-15 19:24:22'),
+(23, 15, 'sergio', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-15 19:33:40'),
+(25, 15, 'sergio', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-15 21:06:38'),
+(26, 15, 'sergio', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-20 14:17:04'),
+(27, 18, 'loli', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-20 15:39:57'),
+(28, 19, 'luis', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-20 16:09:01'),
+(29, 20, 'carmen', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-20 16:18:38'),
+(30, 21, 'adolfo', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-20 16:55:09'),
+(31, 22, 'jesus', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-20 17:09:51'),
+(32, 15, 'sergio', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-20 17:47:02'),
+(33, 20, 'carmen', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-20 17:50:23'),
+(34, 19, 'luis', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-20 17:56:05'),
+(37, 15, 'sergio', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-22 07:21:29'),
+(39, 26, 'bale', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-22 07:23:07'),
+(40, 26, 'bale', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-22 07:27:41'),
+(41, 26, 'bale', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-22 07:45:03'),
+(43, 15, 'sergio', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-22 08:09:24'),
+(44, 20, 'carmen', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-22 08:09:32'),
+(45, 26, 'bale', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-22 08:11:55'),
+(46, 27, 'julia', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-22 08:12:50'),
+(47, 27, 'julia', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-22 08:19:55'),
+(48, 26, 'bale', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-22 08:44:29'),
+(49, 26, 'bale', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-22 08:46:24'),
+(50, 27, 'julia', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-22 08:46:56'),
+(51, 28, 'pablo', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-22 08:50:49'),
+(52, 28, 'pablo', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-22 08:53:23'),
+(53, 27, 'julia', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-22 08:54:03'),
+(55, 20, 'carmen', '100.127.7.116', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', '2026-04-22 08:59:37'),
+(56, 29, 'tiago', '100.127.7.116', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', '2026-04-22 09:03:38'),
+(57, 15, 'sergio', '100.127.7.116', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', '2026-04-22 09:04:04'),
+(58, 29, 'tiago', '100.127.7.116', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', '2026-04-22 09:04:19'),
+(59, 30, 'tiago.adm', '100.127.7.116', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', '2026-04-22 09:04:26'),
+(60, 26, 'bale', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-22 09:05:21'),
+(61, 29, 'tiago', '100.127.7.116', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', '2026-04-22 09:05:26'),
+(62, 26, 'bale', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-22 21:28:39'),
+(63, 27, 'julia', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-22 21:31:46'),
+(64, 29, 'tiago', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-29 08:44:25'),
+(65, 27, 'julia', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-29 08:47:20'),
+(66, 29, 'tiago', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-29 08:52:23'),
+(67, 27, 'julia', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-29 08:53:31'),
+(68, 30, 'tiago.adm', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-29 08:59:22'),
+(69, 27, 'julia', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-04-29 15:26:18'),
+(70, 30, 'tiago.adm', '100.127.7.116', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', '2026-05-06 07:29:03'),
+(71, 20, 'carmen', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-05-06 08:00:27'),
+(72, 30, 'tiago.adm', '100.114.123.21', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0', '2026-05-06 08:00:53'),
+(73, 29, 'tiago', '100.114.123.21', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0', '2026-05-06 08:15:53'),
+(74, 30, 'tiago.adm', '100.114.123.21', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0', '2026-05-06 08:16:08'),
+(75, 29, 'tiago', '100.114.123.21', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0', '2026-05-06 08:16:24'),
+(76, 30, 'tiago.adm', '100.114.123.21', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0', '2026-05-06 08:39:45'),
+(77, 20, 'carmen', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-05-06 08:57:31'),
+(78, 29, 'tiago', '100.114.123.21', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0', '2026-05-06 09:02:20'),
+(79, 30, 'tiago.adm', '100.114.123.21', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0', '2026-05-06 09:02:27'),
+(80, 30, 'tiago.adm', '100.114.123.21', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0', '2026-05-06 11:55:06'),
+(81, 29, 'tiago', '100.114.123.21', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0', '2026-05-06 12:23:34'),
+(82, 20, 'carmen', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-05-06 16:47:27'),
+(83, 15, 'sergio', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-05-06 16:48:16'),
+(84, 20, 'carmen', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-05-06 17:46:49'),
+(85, 15, 'sergio', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-05-06 18:19:06'),
+(86, 29, 'tiago', '100.67.140.106', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0', '2026-05-06 19:04:24'),
+(87, 15, 'sergio', '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0', '2026-05-06 20:02:30'),
+(88, 30, 'tiago.adm', '100.67.140.106', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0', '2026-05-06 20:14:35'),
+(89, 29, 'tiago', '100.67.140.106', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0', '2026-05-06 20:18:30'),
+(90, 30, 'tiago.adm', '100.67.140.106', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0', '2026-05-06 20:18:39'),
+(91, 20, 'carmen', '100.76.130.112', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-05-06 20:31:38'),
+(92, 19, 'luis', '100.76.130.112', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-05-06 20:33:05'),
+(93, 15, 'sergio', '100.76.130.112', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-05-06 20:34:18'),
+(94, 29, 'tiago', '100.67.140.106', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0', '2026-05-06 20:36:31'),
+(95, 20, 'carmen', '100.76.130.112', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-05-06 20:37:05'),
+(96, 30, 'tiago.adm', '100.67.140.106', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0', '2026-05-06 20:45:36'),
+(97, 15, 'sergio', '100.67.140.106', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0', '2026-05-06 20:48:52'),
+(98, 20, 'carmen', '100.67.140.106', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0', '2026-05-06 20:50:31'),
+(99, 19, 'luis', '100.67.140.106', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0', '2026-05-06 20:51:08'),
+(100, 20, 'carmen', '100.76.130.112', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-05-06 21:44:58'),
+(101, 15, 'sergio', '100.76.130.112', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-05-07 17:50:47'),
+(102, 20, 'carmen', '100.76.130.112', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-05-07 17:51:18'),
+(103, 30, 'tiago.adm', '100.67.140.106', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0', '2026-05-07 19:04:18'),
+(104, 15, 'sergio', '100.76.130.112', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-05-07 19:32:04'),
+(105, 30, 'tiago.adm', '100.67.140.106', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0', '2026-05-07 19:49:42'),
+(106, 29, 'tiago', '100.98.238.69', 'Mozilla/5.0 (iPhone; CPU iPhone OS 26_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/147.0.7727.99 Mobile/15E148 Safari/604.1', '2026-05-08 10:04:21'),
+(107, 29, 'tiago', '100.98.238.69', 'Mozilla/5.0 (iPhone; CPU iPhone OS 26_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/147.0.7727.99 Mobile/15E148 Safari/604.1', '2026-05-08 11:21:35'),
+(108, 30, 'tiago.adm', '100.98.238.69', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/147 Version/11.1.1 Safari/605.1.15', '2026-05-08 11:25:30'),
+(109, 15, 'sergio', '100.76.130.112', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-05-08 16:24:36'),
+(110, 20, 'carmen', '100.76.130.112', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-05-08 17:20:04'),
+(111, 15, 'sergio', '100.76.130.112', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-05-08 19:30:04'),
+(112, 15, 'sergio', '100.76.130.112', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-05-08 20:04:35'),
+(113, 30, 'tiago.adm', '100.67.140.106', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0', '2026-05-08 21:59:35'),
+(114, 20, 'carmen', '100.76.130.112', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-05-08 22:02:32'),
+(115, 29, 'tiago', '100.67.140.106', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0', '2026-05-08 22:03:12'),
+(116, 15, 'sergio', '100.76.130.112', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-05-08 22:05:34'),
+(117, 31, 'asd', '100.67.140.106', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0', '2026-05-08 22:07:48'),
+(118, 30, 'tiago.adm', '100.67.140.106', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0', '2026-05-08 22:22:59'),
+(119, 15, 'sergio', '100.76.130.112', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', '2026-05-08 22:31:20');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `retos`
 --
 
@@ -86,8 +280,11 @@ CREATE TABLE `retos` (
   `puntos` int(11) NOT NULL DEFAULT 0,
   `dificultad` enum('Fácil','Media','Difícil') NOT NULL,
   `categoria_id` int(11) NOT NULL,
-  `flag_hash` varchar(255) NOT NULL,
+  `flag` varchar(255) DEFAULT NULL,
   `activo` tinyint(1) NOT NULL DEFAULT 1,
+  `tipo_entorno` enum('guacamole','descargable') NOT NULL DEFAULT 'guacamole',
+  `maquina_url` varchar(255) DEFAULT NULL,
+  `archivo_descarga` varchar(255) DEFAULT NULL,
   `creado_en` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -95,9 +292,20 @@ CREATE TABLE `retos` (
 -- Volcado de datos para la tabla `retos`
 --
 
-INSERT INTO `retos` (`id`, `titulo`, `descripcion`, `puntos`, `dificultad`, `categoria_id`, `flag_hash`, `activo`, `creado_en`) VALUES
-(1, 'SQLi Básico', 'Bypass del login usando inyección SQL.', 50, 'Fácil', 1, '9857b2f6c80f759de9c4b0a8562890030cd6e5dd4ea9042c9b27d81ea515d92d', 1, '2025-12-22 13:42:33'),
-(2, 'XSS Stored', 'Ejecuta JavaScript persistente en comentarios.', 120, 'Media', 1, '12d02966391b1fa02b19046b5f1e02085b66c0ad892b194d65dd5ec0c2d545af', 1, '2025-12-22 13:42:33');
+INSERT INTO `retos` (`id`, `titulo`, `descripcion`, `puntos`, `dificultad`, `categoria_id`, `flag`, `activo`, `tipo_entorno`, `maquina_url`, `archivo_descarga`, `creado_en`) VALUES
+(1, 'Broken SSH', 'Serás capaz de vulnerar un SSH y conseguir las credenciales del administrador.', 50000, 'Fácil', 1, 'estrella', 1, 'guacamole', 'http://100.74.192.110:8080/guacamole/#/client/MQBnAG15c3Fs', NULL, '2025-12-22 13:42:33'),
+(10, 'Shadow Login', 'Máquina retirada enfocada en enumeración web, revisión de paneles ocultos y análisis básico de credenciales expuestas.', 40, 'Fácil', 1, NULL, 0, 'descargable', NULL, 'descargas/shadow_login.zip', '2026-05-06 08:14:26'),
+(11, 'Broken Gallery', 'Reto retirado basado en una galería vulnerable donde se practican subidas de archivos, validaciones débiles y bypass de extensiones.', 70, 'Media', 1, NULL, 0, 'descargable', NULL, 'descargas/broken_gallery.zip', '2026-05-06 08:14:26'),
+(12, 'Old Backup', 'Máquina retirada centrada en búsqueda de backups expuestos, análisis de ficheros sensibles y extracción de información de configuración.', 55, 'Fácil', 1, NULL, 0, 'descargable', NULL, 'descargas/old_backup.zip', '2026-05-06 08:14:26'),
+(13, 'Internal Notes', 'Reto retirado donde se trabaja la enumeración de servicios internos, lectura de notas filtradas y escalada lógica de privilegios.', 90, 'Media', 1, NULL, 0, 'descargable', NULL, 'descargas/internal_notes.zip', '2026-05-06 08:14:26'),
+(14, 'Root Factory', 'Máquina retirada de dificultad alta orientada a explotación web inicial, análisis de permisos incorrectos y obtención de acceso privilegiado.', 130, 'Difícil', 1, NULL, 0, 'descargable', NULL, 'descargas/root_factory.zip', '2026-05-06 08:14:26'),
+(16, 'WhereIsMyShell', 'Reto activo orientado a enumeración web básica y búsqueda de una shell.', 50, 'Fácil', 1, 'contraseñaderoot123', 1, 'guacamole', '/guacamole/#/client/MgBnAG15c3Fs', NULL, '2026-05-06 12:26:58'),
+(17, 'Panel Ghost', 'Máquina activa centrada en búsqueda de paneles ocultos, fuerza bruta controlada y análisis de credenciales filtradas.', 60, 'Fácil', 1, 'asd', 1, 'guacamole', '/guacamole/#/client/MQBjAG15c3Fs', NULL, '2026-05-06 12:26:58'),
+(19, 'Cookie Monster', 'Máquina enfocada en manipulación de cookies, sesiones inseguras y escalada lógica dentro de una aplicación web vulnerable.', 75, 'Media', 1, 'asd', 1, 'guacamole', '/guacamole/#/client/MQBjAG15c3Fs', NULL, '2026-05-06 12:26:58'),
+(20, 'XSS Mirror', 'Reto activo para practicar Cross-Site Scripting reflejado, robo simulado de sesión y análisis de entradas no saneadas.', 65, 'Fácil', 1, 'asd', 1, 'guacamole', '/guacamole/#/client/MQBjAG15c3Fs', NULL, '2026-05-06 12:26:58'),
+(22, 'Backup Hunter', 'Reto basado en búsqueda de copias de seguridad olvidadas, análisis de configuración y extracción de credenciales.', 70, 'Fácil', 1, 'asd', 1, 'guacamole', '/guacamole/#/client/MQBjAG15c3Fs', NULL, '2026-05-06 12:26:58'),
+(23, 'Pivot Lab', 'Máquina activa orientada a reconocimiento de red interna, descubrimiento de servicios y pivoting básico entre máquinas.', 120, 'Difícil', 1, 'asd', 1, 'guacamole', '/guacamole/#/client/MQBjAG15c3Fs', NULL, '2026-05-06 12:26:58'),
+(24, 'Token Breaker', 'Reto centrado en análisis de tokens débiles, manipulación de JWT y acceso a funcionalidades administrativas.', 110, 'Difícil', 1, 'asd', 1, 'guacamole', '/guacamole/#/client/MQBjAG15c3Fs', NULL, '2026-05-06 12:26:58');
 
 -- --------------------------------------------------------
 
@@ -116,8 +324,9 @@ CREATE TABLE `solves` (
 --
 
 INSERT INTO `solves` (`usuario_id`, `reto_id`, `resuelto_en`) VALUES
-(2, 1, '2025-12-22 14:05:24'),
-(2, 2, '2025-12-22 14:06:57');
+(15, 16, '2026-05-08 20:13:32'),
+(20, 1, '2026-05-06 08:03:23'),
+(30, 1, '2026-05-06 08:03:12');
 
 -- --------------------------------------------------------
 
@@ -139,9 +348,14 @@ CREATE TABLE `submissions` (
 --
 
 INSERT INTO `submissions` (`id`, `usuario_id`, `reto_id`, `flag_enviada`, `es_correcta`, `enviada_en`) VALUES
-(1, 2, 1, 'FLAG{SQLI_OK}', 1, '2025-12-22 14:05:24'),
-(2, 2, 2, 'FLAG{SQLI_OK}', 0, '2025-12-22 14:05:46'),
-(3, 2, 2, 'FLAG{XSS_OK}', 1, '2025-12-22 14:06:57');
+(4, 20, 1, 'tusmuertos', 0, '2026-05-06 08:02:51'),
+(5, 30, 1, 'tusmuerto', 1, '2026-05-06 08:03:12'),
+(6, 20, 1, 'tusmuerto', 1, '2026-05-06 08:03:23'),
+(11, 30, 1, 'prueba', 1, '2026-05-06 08:09:17'),
+(12, 30, 1, 'prueba', 1, '2026-05-06 08:10:33'),
+(15, 30, 1, 'prueba', 1, '2026-05-06 08:11:02'),
+(16, 30, 1, 'prueba', 1, '2026-05-06 08:11:16'),
+(19, 15, 16, 'contraseñaderoot123', 1, '2026-05-08 20:13:32');
 
 -- --------------------------------------------------------
 
@@ -155,21 +369,42 @@ CREATE TABLE `usuarios` (
   `email` varchar(100) NOT NULL,
   `password_hash` varchar(255) NOT NULL,
   `fecha_registro` datetime DEFAULT current_timestamp(),
-  `points` int(11) DEFAULT 0
+  `points` int(11) DEFAULT 0,
+  `rol` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `username`, `email`, `password_hash`, `fecha_registro`, `points`) VALUES
-(2, 'admin', 'admin@admin.es', '$2y$10$1G4hfBjO28KunIDcGTt8a.2jKBej12w93bWA23xaYLaKXBUNPOoLa', '2025-12-10 10:02:53', 1670),
-(6, 'willy', 'willybilly@gmail.com', '$2y$10$a443TpOKrFjGlDOZYfMLu.u3ANijXiCST.J/3y7Acwu1COy1YiT0u', '2025-12-17 09:41:39', 950),
-(7, 'usuario', 'usuario@usuario.es', '$2y$10$XEhvNghCwylx56L/QvFFruMCML37HNUjqUGM5yHMMHceiL1olcWOa', '2025-12-17 10:28:56', 1200);
+INSERT INTO `usuarios` (`id`, `username`, `email`, `password_hash`, `fecha_registro`, `points`, `rol`) VALUES
+(15, 'sergio', 'sergiocastillaroncel@gmail.com', '$2y$10$5TerYWAMshFafnvDyO8RlelPL5ci02VMVucol01eoVfor7H.ADpHm', '2026-04-15 10:39:14', 3050, 1),
+(16, 'willy', 'willy@willy.es', '$2y$10$9NGKXMiyLJbowh5.LsYqe..PVzAWavgp6Qhj0QWZAFXDsXUVsQl5y', '2026-04-15 10:48:47', 0, 0),
+(18, 'loli', 'loli@gmail.com', '$2y$10$RLi4QGKpkeWB.nYSYw7miesmaZychkwmveTUvlNcpDYAAsiVwkrnG', '2026-04-20 17:39:10', 0, 0),
+(19, 'luis', 'luis@gmail.com', '$2y$10$MVu8Ds7xs.n/yGAxkhz4TOPBSqaEGLThzDil27y250wdrMpaZdwpK', '2026-04-20 18:08:54', 0, 0),
+(20, 'carmen', 'carmen@gmail.com', '$2y$10$qMLowr8k3WECeex7CjF/keD7UhXxRISOKndvOlaRxWhwzuhchtX5O', '2026-04-20 18:18:29', 260, 0),
+(21, 'adolfo', 'adolfo@gmail.com', '$2y$10$/xmwW3y1Kf4odFvrTKLb/eS10AMEJ2afDG4i6IKteGA4PmYQIaObe', '2026-04-20 18:55:03', 0, 0),
+(22, 'jesus', 'jesus@gmail.com', '$2y$10$v9JYaFkViKgyMgeUXTzjdO3dV3b0bEZhelnENLQK6uWzcHdNEXgEi', '2026-04-20 19:09:46', 0, 0),
+(23, 'nico', 'nico@gmail.com', '$2y$10$N87J7z7d0Qm77bDFFwJtDezUOtJE.je/UMDti.kFJe.B8mtiQhF9q', '2026-04-20 20:53:00', 0, 0),
+(24, 'kiko', 'kiko@gmail.com', '$2y$10$7SUrcQJ3Nndk0L349eyuQ.Q5emLX/c9Au0qaZnTcZDiDn0SSqDqu2', '2026-04-20 20:56:11', 0, 0),
+(26, 'bale', 'bale@gmail.com', '$2y$10$7ya2fgqttuthmfHM3CSuwOUWZvNHlODleafk0spABHUZaISyhoVo2', '2026-04-22 09:23:00', 0, 0),
+(27, 'julia', 'julia@gmail.com', '$2y$10$xCPIcCOb5xMarSgJsc/n1.fiG757jO6sZ1nt4LvV87NnBAsrzq9PK', '2026-04-22 10:12:45', 0, 0),
+(28, 'pablo', 'pablo@gmail.com', '$2y$10$9h7lyREtkY5ycus9X8zEw.3MUv7tQ8YK3ojKGWtM1XBykK3EnshUu', '2026-04-22 10:50:43', 0, 0),
+(29, 'tiago', 'tiagofernandezdelahera@gmail.com', '$2y$10$.6ZLrPqa5a.EWcyfjq84q.MC9i7WLbRUYGJwshfKPj6WxiSUm8vR.', '2026-04-22 11:03:36', 200, 0),
+(30, 'tiago.adm', 'tiago.adm@tiago.adm.es', '$2y$10$DhSvmNvGEOIO5Gx9N5scxuzboc8kM2JJOHYngMKQWjCnzhVH.BRE.', '2026-04-22 11:03:59', 750, 1),
+(31, 'asd', 'asd@asd.es', '$2y$10$/gDSsgXI0MLtGi.RtuqFEefhIni1o1dw0LIt3IgjQp.ibQvsrWjPW', '2026-05-09 00:07:46', 0, 0);
 
 --
 -- Índices para tablas volcadas
 --
+
+--
+-- Indices de la tabla `academia_email_logs`
+--
+ALTER TABLE `academia_email_logs`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_post_usuario` (`post_id`,`usuario_id`),
+  ADD KEY `usuario_id` (`usuario_id`);
 
 --
 -- Indices de la tabla `academia_posts`
@@ -185,6 +420,28 @@ ALTER TABLE `categorias`
   ADD UNIQUE KEY `nombre` (`nombre`);
 
 --
+-- Indices de la tabla `cooldown_conexiones`
+--
+ALTER TABLE `cooldown_conexiones`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id_usuario` (`id_usuario`);
+
+--
+-- Indices de la tabla `foro_retos`
+--
+ALTER TABLE `foro_retos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_reto_id` (`reto_id`);
+
+--
+-- Indices de la tabla `login_activity`
+--
+ALTER TABLE `login_activity`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_login_usuario` (`usuario_id`),
+  ADD KEY `idx_login_fecha` (`login_at`);
+
+--
 -- Indices de la tabla `retos`
 --
 ALTER TABLE `retos`
@@ -196,6 +453,7 @@ ALTER TABLE `retos`
 --
 ALTER TABLE `solves`
   ADD PRIMARY KEY (`usuario_id`,`reto_id`),
+  ADD UNIQUE KEY `unique_solve_usuario_reto` (`usuario_id`,`reto_id`),
   ADD KEY `reto_id` (`reto_id`);
 
 --
@@ -219,10 +477,16 @@ ALTER TABLE `usuarios`
 --
 
 --
+-- AUTO_INCREMENT de la tabla `academia_email_logs`
+--
+ALTER TABLE `academia_email_logs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=127;
+
+--
 -- AUTO_INCREMENT de la tabla `academia_posts`
 --
 ALTER TABLE `academia_posts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT de la tabla `categorias`
@@ -231,26 +495,63 @@ ALTER TABLE `categorias`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
+-- AUTO_INCREMENT de la tabla `cooldown_conexiones`
+--
+ALTER TABLE `cooldown_conexiones`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT de la tabla `foro_retos`
+--
+ALTER TABLE `foro_retos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT de la tabla `login_activity`
+--
+ALTER TABLE `login_activity`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=120;
+
+--
 -- AUTO_INCREMENT de la tabla `retos`
 --
 ALTER TABLE `retos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT de la tabla `submissions`
 --
 ALTER TABLE `submissions`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- Restricciones para tablas volcadas
 --
+
+--
+-- Filtros para la tabla `academia_email_logs`
+--
+ALTER TABLE `academia_email_logs`
+  ADD CONSTRAINT `academia_email_logs_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `academia_posts` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `academia_email_logs_ibfk_2` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `foro_retos`
+--
+ALTER TABLE `foro_retos`
+  ADD CONSTRAINT `fk_foro_reto` FOREIGN KEY (`reto_id`) REFERENCES `retos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `login_activity`
+--
+ALTER TABLE `login_activity`
+  ADD CONSTRAINT `fk_login_activity_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `retos`

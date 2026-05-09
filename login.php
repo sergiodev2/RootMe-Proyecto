@@ -1,43 +1,44 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 session_start();
-require "db.php";
+require __DIR__ . "/db.php";
+require __DIR__ . '/guacamole_functions.php';
 
-
-// Inicialización de variables
 $error = '';
 $registerError = '';
 $registerSuccess = '';
 
-
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-
-    // ------------------ LOGIN ------------------
+    
     if (isset($_POST['login'])) {
-        $username = $_POST['username'] ?? '';
-        $password = $_POST['password'] ?? '';
+        $username = trim($_POST['username'] ?? '');
+        $password = trim($_POST['password'] ?? '');
 
-        $stmt = $conn->prepare("SELECT password_hash FROM usuarios WHERE username = ?");
+        $sql = "SELECT id, username, password_hash, rol FROM usuarios WHERE username = ? LIMIT 1";
+        $stmt = mysqli_prepare($conn, $sql);
         if (!$stmt) {
-            die("ERROR PREPARE LOGIN: " . $conn->error);
+            die("ERROR PREPARE LOGIN: " . mysqli_error($conn));
         }
 
-        $stmt->bind_param("s", $username);
-        $stmt->execute();
-        $stmt->store_result();
+        mysqli_stmt_bind_param($stmt, "s", $username);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_bind_result($stmt, $idUsuario, $usernameBD, $hash, $rol);
 
-        if ($stmt->num_rows > 0) {
-            $stmt->bind_result($hash);
-            $stmt->fetch();
+        $loginCorrecto = false;
+        $idLogin = 0;
+        $usernameLogin = '';
+        $rolLogin = 0;
 
+        if (mysqli_stmt_fetch($stmt)) {
             if (password_verify($password, $hash)) {
-                echo "DEBUG: PASSWORD CORRECTA<br>";
-		$_SESSION['username'] = $username;
-                header("Location: indexlogged.php");
-
-                exit();
+                $loginCorrecto = true;
+                $idLogin = (int)$idUsuario;
+                $usernameLogin = $usernameBD;
+                $rolLogin = (int)$rol;
             } else {
                 $error = "❌ Credenciales incorrectas";
             }
@@ -45,60 +46,80 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = "❌ Usuario no encontrado";
         }
 
-        $stmt->close();
+        mysqli_stmt_close($stmt);
+
+        if ($loginCorrecto) {
+            $_SESSION['user_id'] = $idLogin;
+            $_SESSION['username'] = $usernameLogin;
+            $_SESSION['rol'] = $rolLogin;
+
+            $ip = $_SERVER['REMOTE_ADDR'] ?? null;
+            $userAgent = substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 255);
+
+            $stmtLog = mysqli_prepare($conn, "INSERT INTO login_activity (usuario_id, username, ip_address, user_agent) VALUES (?, ?, ?, ?)");
+            if ($stmtLog) {
+                mysqli_stmt_bind_param($stmtLog, "isss", $idLogin, $usernameLogin, $ip, $userAgent);
+                mysqli_stmt_execute($stmtLog);
+                mysqli_stmt_close($stmtLog);
+            }
+
+            header("Location: index.php");
+            exit();
+        }
     }
 
-    // ------------------ REGISTRO ------------------
+    
     if (isset($_POST['register'])) {
+        $newUser = trim($_POST['username'] ?? '');
+        $newEmail = trim($_POST['email'] ?? '');
+        $newPassword = trim($_POST['password'] ?? '');
 
-        echo "DEBUG: REGISTRO DETECTADO<br>";
-
-        $newUser = $_POST['username'] ?? '';
-        $newEmail = $_POST['email'] ?? '';
-        $newPassword = $_POST['password'] ?? '';
-
-        echo "DEBUG: PREPARANDO CONSULTA REGISTRO<br>";
-
-        $stmt = $conn->prepare("SELECT id FROM usuarios WHERE username = ? OR email = ?");
-        if (!$stmt) {
-            die("ERROR PREPARE REGISTRO: " . $conn->error);
-        }
-
-        $stmt->bind_param("ss", $newUser, $newEmail);
-        $stmt->execute();
-        $stmt->store_result();
-
-        echo "DEBUG: CONSULTA REGISTRO EJECUTADA<br>";
-
-        if ($stmt->num_rows > 0) {
-            $registerError = "❌ El usuario o email ya existen";
+        if ($newUser === '' || $newEmail === '' || $newPassword === '') {
+            $registerError = "❌ Todos los campos son obligatorios";
         } else {
-
-            echo "DEBUG: INSERTANDO USUARIO<br>";
-
-            $hash = password_hash($newPassword, PASSWORD_DEFAULT);
-
-            $insert = $conn->prepare("INSERT INTO usuarios (username, email, password_hash) VALUES (?, ?, ?)");
-            if (!$insert) {
-                die("ERROR INSERT PREPARE: " . $conn->error);
+            $sql = "SELECT id FROM usuarios WHERE username = ? OR email = ?";
+            $stmt = mysqli_prepare($conn, $sql);
+            if (!$stmt) {
+                die("ERROR PREPARE REGISTRO: " . mysqli_error($conn));
             }
 
-            $insert->bind_param("sss", $newUser, $newEmail, $hash);
+            mysqli_stmt_bind_param($stmt, "ss", $newUser, $newEmail);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_store_result($stmt);
 
-            if ($insert->execute()) {
-                $registerSuccess = "✅ Usuario registrado correctamente. Por favor, inicia sesión.";
+            if (mysqli_stmt_num_rows($stmt) > 0) {
+                $registerError = "❌ El usuario o email ya existen";
+                mysqli_stmt_close($stmt);
             } else {
-                $registerError = "❌ Error al registrar usuario";
+                mysqli_stmt_close($stmt);
+
+                $hash = password_hash($newPassword, PASSWORD_DEFAULT);
+
+                $sql = "INSERT INTO usuarios (username, email, password_hash, rol) VALUES (?, ?, ?, 0)";
+                $insert = mysqli_prepare($conn, $sql);
+                if (!$insert) {
+                    die("ERROR INSERT PREPARE: " . mysqli_error($conn));
+                }
+
+                mysqli_stmt_bind_param($insert, "sss", $newUser, $newEmail, $hash);
+
+                if (mysqli_stmt_execute($insert)) {
+                    mysqli_stmt_close($insert);
+
+                    try {
+                        crearUsuarioGuacamole($newUser, $newPassword, $newUser, $newEmail);
+                        $registerSuccess = "✅ Usuario registrado correctamente. Por favor, inicia sesión.";
+                    } catch (Exception $e) {
+                        $registerError = "❌ Usuario creado en la web, pero no en Guacamole: " . $e->getMessage();
+                    }
+                } else {
+                    $registerError = "❌ Error al registrar usuario: " . mysqli_error($conn);
+                    mysqli_stmt_close($insert);
+                }
             }
-
-            $insert->close();
         }
-
-        $stmt->close();
     }
 }
-
-
 ?>
 
 <!DOCTYPE html>
@@ -112,37 +133,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <div class="login-box">
 
-    <!-- LOGIN -->
     <div id="login-form" style="display:block;">
         <h2>>_ LOGIN</h2>
 
-        <!-- Mensaje de error en rojo -->
         <?php if ($error): ?>
-        <p style="color:red; font-weight:bold; margin-bottom:10px;"><?php echo $error; ?></p>
+            <p style="color:red; font-weight:bold; margin-bottom:10px;"><?php echo htmlspecialchars($error); ?></p>
         <?php endif; ?>
 
-        <!-- Mensaje de registro exitoso en verde -->
         <?php if ($registerSuccess): ?>
-        <p style="color:green; font-weight:bold; margin-bottom:10px;"><?php echo $registerSuccess; ?></p>
+            <p style="color:green; font-weight:bold; margin-bottom:10px;"><?php echo htmlspecialchars($registerSuccess); ?></p>
         <?php endif; ?>
 
         <form action="login.php" method="POST">
             <label>usr:</label>
             <input type="text" name="username" placeholder="root" required autocomplete="off">
+
             <label>pwd:</label>
             <input type="password" name="password" placeholder="******" required>
+
             <button type="submit" name="login">CONNECT</button>
         </form>
 
         <span class="toggle-link" onclick="toggleForms()">[ Crear nueva cuenta ]</span>
     </div>
 
-    <!-- REGISTRO -->
     <div id="register-form" style="display:none;">
         <h2>>_ NEW USER</h2>
 
         <?php if ($registerError): ?>
-        <p style="color:red; font-weight:bold; margin-bottom:10px;"><?php echo $registerError; ?></p>
+            <p style="color:red; font-weight:bold; margin-bottom:10px;"><?php echo htmlspecialchars($registerError); ?></p>
         <?php endif; ?>
 
         <form action="login.php" method="POST">
@@ -154,6 +173,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <label>pwd:</label>
             <input type="password" name="password" required>
+
+            <label style="display:flex; align-items:center; gap:8px; margin-top:12px; font-size:13px; color:#ddd; cursor:pointer;">
+                <input type="checkbox" name="recibir_novedades" value="1" style="width:auto; margin:0;">
+                Recibir novedades, nuevos retos y avisos de la plataforma
+            </label>
 
             <button type="submit" name="register">REGISTER</button>
         </form>
@@ -167,6 +191,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 function toggleForms() {
     var login = document.getElementById('login-form');
     var register = document.getElementById('register-form');
+
     if (login.style.display === "none") {
         login.style.display = "block";
         register.style.display = "none";
@@ -176,13 +201,16 @@ function toggleForms() {
     }
 }
 
-// Si se registró correctamente, mostrar login automáticamente
 <?php if ($registerSuccess): ?>
 document.getElementById('login-form').style.display = 'block';
 document.getElementById('register-form').style.display = 'none';
+<?php endif; ?>
+
+<?php if ($registerError): ?>
+document.getElementById('login-form').style.display = 'none';
+document.getElementById('register-form').style.display = 'block';
 <?php endif; ?>
 </script>
 
 </body>
 </html>
-

@@ -48,5 +48,5 @@ button:hover { background: #00ff41; color: black; }
 }
 .toggle-link:hover { color: #fff; text-decoration: underline; }
 
-/* Ocultar registro por defecto */
+
 #register-form { display: none; }
